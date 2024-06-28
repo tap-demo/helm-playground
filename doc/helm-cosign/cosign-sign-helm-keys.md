@@ -91,5 +91,4 @@ We need to provide the public key (which is part of the secret in this case) and
 $ cosign verify-blob --key k8s://signing-secrets/cosign-signing-secret cosign-key-chart-0.1.0.tgz --signature cosign-key-chart-0.1.0.tgz.sig 
 Verified OK
 
-
 ```

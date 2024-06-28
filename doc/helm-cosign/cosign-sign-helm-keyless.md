@@ -29,7 +29,7 @@ $ cosign sign-blob cosign-chart-0.1.0.tgz --output-signature='cosign-chart-0.1.0
 
 ### Bundles, Certificates and Signatures
 
-__Bundles__ 
+__Bundles__  
  The bundle file contains the signature that is required to verify the blob against the rekor transparency log. When signing container images (or blobs stored in OCI registries) the signature is automatically attached to artifact in the registry, so no bundle file or external signature is needed, unless the image should be verified without access to rekor (offline or shipped to a customer with no access to the transparency log). The bundle file name can be anything, but it is a good practice to name it to match the signed artifact. 
 
 __Important details about bundles__ 
@@ -56,7 +56,7 @@ $ jq . cosign-chart-0.1.0.tgz.bundle
 
 When verifying an artifact's integrity with a bundle, cosign will use the rekor information in the bundle, not the online rekor information. This verifies the artifact's integrity and that a rekor entry (with a Signed Timestamp) exists in rekor. While highly unlikely (to forge it, a malicious actor would need the fulcio root certificate and more metadata) - an online verification should be preferred.
 
-For this, instead of a bundle, we use the __signature__ (that would be attached to an image or artifact in a registry) and the __ephemeral certificate__ it was signed with - unless we want to distribute the artifact for offline verification.
+For this, instead of a bundle, we use the *__signature__* (that would be attached to an image or artifact in a registry) and the *__ephemeral certificate__* it was signed with - unless we want to distribute the artifact for offline verification.
 
 During this process, your OIDC provider will challenge you to authenticate, in this example, the configured Keycloak instance. Once successfully authenticated, the signing process will happen:
 
