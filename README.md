@@ -32,7 +32,7 @@ In theory, the provenance file could be altered alongside the helm chart, so whi
 
 ### Standard Helm Method, with added Transparency
 
-To add another layer of security, the signed helm chart can be appended to a tamper-proof ledger, the rekor transparency log, with the help of the helm-sigstore plugin. 
+To [add another layer of security](./doc/standard-helm-rekor/sign-helmchart-rekor.md), the signed helm chart can be appended to a tamper-proof ledger, the rekor transparency log, with the help of the helm-sigstore plugin. 
 While the signature (and provenance file) remain the same, the signature, file's sha fingerprint and other metadata are stored in the rekor transparency log and are used for verification - this way, you can make sure that the signed helm chart you are verifying is exactly the same as the one that was generated and logged in rekor.
 
 
