@@ -21,7 +21,7 @@ There are several options how to sign and verify a helm chart:
 
 ### Standard Helm Method
 
-The standard helm method follows the helm guidance for signing a chart. 
+The [standard helm method](./doc/standard-helm/sign-helmchart.md) follows the helm guidance for signing a chart. 
 It signs a chart with a pre-existing private key and generates a "provenance" file that is used for verification of the signature, as it needs to be stored / distributed alongside the chart.
 
 In theory, the provenance file could be altered alongside the helm chart, so while this serves as a foundation, it is only the bare minimum.
