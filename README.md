@@ -39,7 +39,7 @@ While the signature (and provenance file) remain the same, the signature, file's
 
 ### Sigstore / Trusted Artifact Signer
 
-Trusted Aratifact Signer can sign and verify any blob, including a packaged helm chart.
+Trusted Aratifact Signer can [sign and verify any blob](./doc/helm-cosign/cosign-sign-helm.md), including a packaged helm chart.
 
 This method, while not helm-specific adds flexibility in many ways:
 
