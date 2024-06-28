@@ -21,9 +21,42 @@ To sign this chart (or any other file), invoke cosign using the `sign-blob` comm
 ```
 $ cosign sign-blob cosign-chart-0.1.0.tgz --bundle cosign-chart-0.1.0.tgz.bundle
 ```
+or 
 
-*__Note__*: The bundle file contains the signature that is required to verify the blob against the rekor transparency log. When signing container images (or blobs stored in OCI registries) the signature is automatically attached to artifact in the registry, so no bundle file is needed, unless the image should be verified without access to rekor (offline or shipped to a customer with no access to the transparency log). The bundle file name can be anything, but it is a good practice to name it to match the signed artifact. 
+```
+$ cosign sign-blob cosign-chart-0.1.0.tgz --output-signature='cosign-chart-0.1.0.tgz.sig' --output-certificate cosign-chart-0.1.0.tgz.cert
+```
 
+### Bundles, Certificates and Signatures
+
+__Bundles__ 
+ The bundle file contains the signature that is required to verify the blob against the rekor transparency log. When signing container images (or blobs stored in OCI registries) the signature is automatically attached to artifact in the registry, so no bundle file or external signature is needed, unless the image should be verified without access to rekor (offline or shipped to a customer with no access to the transparency log). The bundle file name can be anything, but it is a good practice to name it to match the signed artifact. 
+
+__Important details about bundles__ 
+
+When looking at a bundle file, you will notice that it also contains rekor information that is being used for verification in an offline case or when distributing artifacts, so they can be verfified without online access to rekor.
+
+```
+$ jq . cosign-chart-0.1.0.tgz.bundle
+{
+  "base64Signature": "MEYCIQ...qldaVJB5z3CiGZAZEV+M",
+  "cert": "LS0tLS1...0VSVElGSUNBVEUtLS0tLQo=",
+  "rekorBundle": {
+    "SignedEntryTimestamp": "MGQCM...QMvP9xVNIP0AUx",
+    "Payload": {
+      "body": "eyJhcGlW...CVkVVdExTMHRMUW89In19fX0=",
+      "integratedTime": 1719594002,
+      "logIndex": 50,
+      "logID": "bd3a7a08de404b5665861ccdf7132a04f4a08db666872890944a1a4dcf1227e5"
+    }
+  }
+}
+
+```
+
+When verifying an artifact's integrity with a bundle, cosign will use the rekor information in the bundle, not the online rekor information. This verifies the artifact's integrity and that a rekor entry (with a Signed Timestamp) exists in rekor. While highly unlikely (to forge it, a malicious actor would need the fulcio root certificate and more metadata) - an online verification should be preferred.
+
+For this, instead of a bundle, we use the __signature__ (that would be attached to an image or artifact in a registry) and the __ephemeral certificate__ it was signed with - unless we want to distribute the artifact for offline verification.
 
 During this process, your OIDC provider will challenge you to authenticate, in this example, the configured Keycloak instance. Once successfully authenticated, the signing process will happen:
 
@@ -32,7 +65,7 @@ During this process, your OIDC provider will challenge you to authenticate, in t
 
 
 ```
-$ cosign sign-blob cosign-chart-0.1.0.tgz --bundle cosign-chart-0.1.0.tgz.bundle
+$ cosign sign-blob cosign-chart-0.1.0.tgz --output-signature='cosign-chart-0.1.0.tgz.sig' --output-certificate cosign-chart-0.1.0.tgz.cert
 Using payload from: cosign-chart-0.1.0.tgz
 Generating ephemeral keys...
 Retrieving signed certificate...
@@ -70,27 +103,28 @@ b9Rp2m3+V9eUXiM=
 -----END CERTIFICATE-----
 
 tlog entry created with index: 50
-
-Wrote bundle to file cosign-chart-0.1.0.tgz.bundle
-MEYCIQDqOSdPq1kpa07p7RQ3aIgkvnKr+h09kgKmLy8ucWsnjQIhAOZK3G7PS7x8bOuc7r1iA87lqldaVJB5z3CiGZAZEV+M
+Wrote signature to file cosign-chart-0.1.0.tgz.sig
+Wrote certificate to file cosign-chart-0.1.0.tgz.cert
 
 ```
 
 ## Verifying a helm chart
 
-To verify the chart (blob), cosign needs the `certificate identity`, in other words, "who was the certificate created for", or "who signed it" along with the bundle file.
+To verify the chart (blob), cosign needs the `certificate identity`, in other words, "who was the certificate created for", or "who signed it" along with the signature and ephemeral certificate (or bundle - see above) file.
 
 ``` 
-$ cosign verify-blob cosign-chart-0.1.0.tgz --certificate-identity=user1@opentlc.com --bundle cosign-chart-0.1.0.tgz.bundle 
+$ cosign verify-blob cosign-chart-0.1.0.tgz --certificate-identity=user1@opentlc.com --certificate cosign-chart-0.1.0.tgz.cert --signature cosign-chart-0.1.0.tgz.sig
 Verified OK
+
 ```
 
 This can also be provided as a regular expression, in this case matching all identities start start with `user` and end with `@opentlc.com` (it was signed by user1@opentlc.com)
 
 
 ```
-$ cosign verify-blob cosign-chart-0.1.0.tgz --certificate-identity-regexp=^user.*@opentlc\.com$ --bundle cosign-chart-0.1.0.tgz.bundle 
+cosign verify-blob cosign-chart-0.1.0.tgz --certificate-identity-regexp=^user.*@opentlc\.com$ --certificate cosign-chart-0.1.0.tgz.cert --signature cosign-chart-0.1.0.tgz.sig
 Verified OK
+
 ```
 
 ### Searching the rekor log
