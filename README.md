@@ -52,7 +52,7 @@ This method, while not helm-specific adds flexibility in many ways:
     - alternatively, for example when the chart needs to be distributed externally, a bundle file can be generated. This can be used for offline verification (similar to the helm provenance file)
 
 
-
+### In your CI (here: Tekton / OpenShift Pipelines)
 
 
 
