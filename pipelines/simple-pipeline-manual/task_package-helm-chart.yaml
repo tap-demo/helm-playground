@@ -12,5 +12,9 @@ spec:
     - name: helm-package
       image: alpine/helm:3.6.3
       script: |
+        echo "Packaging..."
+        helm version
         cd $(workspaces.source.path)
+        ls -al 
+        echo $(params.helm-chart-path)
         helm package $(params.helm-chart-path)

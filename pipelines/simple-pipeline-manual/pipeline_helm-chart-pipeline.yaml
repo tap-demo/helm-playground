@@ -6,23 +6,24 @@ spec:
   workspaces:
     - name: shared-workspace
   params:
-    - name: git-url
+    - name: source-repo
       type: string
-    - name: git-revision
+    - name: source-branch
       type: string
     - name: helm-chart-path
       type: string
     - name: oci-registry
       type: string
   tasks:
-    - name: clone-repo
-      taskRef:
-        name: clone-repo
+    - name: git-clone
       params:
         - name: url
-          value: $(params.git-url)
+          value: $(params.source-repo)
         - name: revision
-          value: $(params.git-revision)
+          value: $(params.source-branch)
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
       workspaces:
         - name: output
           workspace: shared-workspace
@@ -37,7 +38,7 @@ spec:
         - name: source
           workspace: shared-workspace
       runAfter:
-        - clone-repo
+        - git-clone
 
     - name: sign-helm-chart
       taskRef:

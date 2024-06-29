@@ -44,3 +44,18 @@ stringData:
   secretToken: your-secret-token
 
 ```
+
+
+
+## Notes about some tasks:
+
+The sign-helm-chart task works, if a secret has been created. This is referenced here:
+
+ ```
+ cosign sign-blob -y --key k8s://test-pipeline/cosign-signing-secret *.tgz --output-signature='cosign.sig'
+ ```
+in the [Signing Task](./task_sign-helm-chart.yaml).
+
+However, since we want to push our image to Quay (as an example for OCI registries), there is a better way to accomplish that (see the steps for [local pushes and signing](../../doc/helm-cosign-oci/cosign-sign-helm-oci.md))
+
+

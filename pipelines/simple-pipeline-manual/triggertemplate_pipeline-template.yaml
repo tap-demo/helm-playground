@@ -4,7 +4,7 @@ metadata:
   name: pipeline-template
 spec:
   params:
-    - name: git-url
+    - name: git-repo-url
     - name: git-revision
     - name: helm-chart-path
     - name: oci-registry
@@ -17,14 +17,14 @@ spec:
         pipelineRef:
           name: helm-chart-pipeline
         params:
-          - name: git-url
-            value: $(params.git-url)
-          - name: git-revision
-            value: $(params.git-revision)
+          - name: source-repo
+            value: $(tt.params.git-repo-url)
+          - name: source-branch
+            value: $(tt.params.git-revision)
           - name: helm-chart-path
-            value: $(params.helm-chart-path)
+            value: $(tt.params.helm-chart-path)
           - name: oci-registry
-            value: $(params.oci-registry)
+            value: $(tt.params.oci-registry)
         workspaces:
           - name: shared-workspace
             persistentVolumeClaim:

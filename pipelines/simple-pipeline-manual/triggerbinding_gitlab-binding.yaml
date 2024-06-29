@@ -4,11 +4,11 @@ metadata:
   name: gitlab-binding
 spec:
   params:
-    - name: git-url
-      value: $(body.project.git_http_url)
+    - name: git-repo-url
+      value: $(body.repository.git_http_url)
     - name: git-revision
-      value: $(body.checkout_sha)
+      value: $(body.after)
     - name: helm-chart-path
-      value: charts/my-chart
+      value: "simplechart"
     - name: oci-registry
-      value: oci://example.com/my-helm-charts
+      value: "oci://example.com/my-helm-charts"

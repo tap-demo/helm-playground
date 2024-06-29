@@ -7,7 +7,8 @@ spec:
     - name: source
   steps:
     - name: sign-chart
-      image: sigstore/cosign:v1.2.1
+      image: registry.redhat.io/rhtas/cosign-rhel9:1.0.2-1719417920
       script: |
         cd $(workspaces.source.path)
-        cosign sign --key <YOUR_COSIGN_KEY> *.tgz
+        ls -al
+        cosign sign-blob -y --key k8s://test-pipeline/cosign-signing-secret *.tgz --output-signature='cosign.sig'
