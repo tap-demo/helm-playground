@@ -1,0 +1,22 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: gitlab-listener
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - name: gitlab-trigger
+      bindings:
+        - kind: TriggerBinding
+          ref: gitlab-binding
+      interceptors:
+      - params:
+          - name: filter
+            value: has(body.commits) && body.object_kind == 'push'
+          - name: overlays
+            value: null
+        ref:
+          kind: ClusterInterceptor
+          name: cel
+      template:
+        ref: pipeline-template

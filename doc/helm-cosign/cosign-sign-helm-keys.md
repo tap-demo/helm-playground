@@ -8,7 +8,7 @@ Cosign also supports key-based signing and verification - but adds the transpare
 
 Before we can sign with long-lived keys, we need those keys, either via receiving them from a central key management instance, from a KMS (key management system, such as Hashicorp Vault, or generating them - optionally also storing them in a KMS).
 
-1) For local use, key can be generated using 
+1) For local use, keys can be generated using 
 
 ```
 cosign generate-key-pair

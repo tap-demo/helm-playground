@@ -1,0 +1,61 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: helm-chart-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+    - name: helm-chart-path
+      type: string
+    - name: oci-registry
+      type: string
+  tasks:
+    - name: clone-repo
+      taskRef:
+        name: clone-repo
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+
+    - name: package-helm-chart
+      taskRef:
+        name: package-helm-chart
+      params:
+        - name: helm-chart-path
+          value: $(params.helm-chart-path)
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      runAfter:
+        - clone-repo
+
+    - name: sign-helm-chart
+      taskRef:
+        name: sign-helm-chart
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      runAfter:
+        - package-helm-chart
+
+    - name: push-helm-chart
+      taskRef:
+        name: push-helm-chart
+      params:
+        - name: oci-registry
+          value: $(params.oci-registry)
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      runAfter:
+        - sign-helm-chart

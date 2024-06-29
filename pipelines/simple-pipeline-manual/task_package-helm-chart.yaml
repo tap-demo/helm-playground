@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: package-helm-chart
+spec:
+  params:
+    - name: helm-chart-path
+      type: string
+  workspaces:
+    - name: source
+  steps:
+    - name: helm-package
+      image: alpine/helm:3.6.3
+      script: |
+        cd $(workspaces.source.path)
+        helm package $(params.helm-chart-path)

@@ -1,0 +1,31 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: pipeline-template
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+    - name: helm-chart-path
+    - name: oci-registry
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: helm-chart-pipeline-run-
+      spec:
+        pipelineRef:
+          name: helm-chart-pipeline
+        params:
+          - name: git-url
+            value: $(params.git-url)
+          - name: git-revision
+            value: $(params.git-revision)
+          - name: helm-chart-path
+            value: $(params.helm-chart-path)
+          - name: oci-registry
+            value: $(params.oci-registry)
+        workspaces:
+          - name: shared-workspace
+            persistentVolumeClaim:
+              claimName: pipeline-pvc

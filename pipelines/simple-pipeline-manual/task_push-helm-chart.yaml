@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: push-helm-chart
+spec:
+  params:
+    - name: oci-registry
+      type: string
+  workspaces:
+    - name: source
+  steps:
+    - name: push-chart
+      image: oras.land/oras:v0.12.0
+      script: |
+        cd $(workspaces.source.path)
+        oras push $(params.oci-registry)/*.tgz

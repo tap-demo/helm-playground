@@ -1,0 +1,13 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: sign-helm-chart
+spec:
+  workspaces:
+    - name: source
+  steps:
+    - name: sign-chart
+      image: sigstore/cosign:v1.2.1
+      script: |
+        cd $(workspaces.source.path)
+        cosign sign --key <YOUR_COSIGN_KEY> *.tgz
