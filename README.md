@@ -61,7 +61,7 @@ The easiest way to work with signed helm charts is with the help of an OCI compl
 
 ### In your CI (here: Tekton / OpenShift Pipelines)
 
-As a very simple example, here is a pipeline that signs a helm chart. 
+As a very simple example, [here](./pipelines/simple-pipeline-manual/README.md) is a pipeline that signs a helm chart. 
 
 [TODO]
 Refactor to use `helm push` and `cosign sign`, instead of `cosign sign-blob`
