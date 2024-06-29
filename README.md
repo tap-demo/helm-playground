@@ -52,7 +52,19 @@ This method, while not helm-specific adds flexibility in many ways:
     - alternatively, for example when the chart needs to be distributed externally, a bundle file can be generated. This can be used for offline verification (similar to the helm provenance file)
 
 
+### With an OCI Registry (such as Quay)
+
+The easiest way to work with signed helm charts is with the help of an OCI compliant registry, such as Quay.
+
+[In this case](./doc/helm-cosign-oci/cosign-sign-helm-oci.md), cosign automatically stores the signature (and attestations, if any) directly in the regsitry and attaches it to the artifact (helm chart).
+
+
 ### In your CI (here: Tekton / OpenShift Pipelines)
+
+As a very simple example, here is a pipeline that signs a helm chart. 
+
+[TODO]
+Refactor to use `helm push` and `cosign sign`, instead of `cosign sign-blob`
 
 
 
